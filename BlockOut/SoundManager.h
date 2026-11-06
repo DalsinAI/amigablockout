@@ -55,7 +55,7 @@ class SoundManager {
     void SetEnable(BOOL enable);
 
   private:
-    int InitSound(char *fileName,Mix_Chunk **snd);
+    int InitSound(const char *fileName,Mix_Chunk **snd);
 
     char errMsg[1024];
     BOOL enabled;

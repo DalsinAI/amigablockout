@@ -30,7 +30,7 @@ void EditControl::SetDisplayLength(int length) {
 
 // ------------------------------------------------
 
-void EditControl::SetMode(char *text,BOOL edit,BYTE *keys) {
+void EditControl::SetMode(const char *text,BOOL edit,BYTE *keys) {
 
   if( strlen(text)>=255 ) {
     strncpy(editText,text,255);

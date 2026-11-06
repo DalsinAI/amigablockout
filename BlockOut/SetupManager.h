@@ -67,7 +67,7 @@ class SetupManager {
     float GetAnimationTime(); /* in seconds */
 
     // Names
-    char *GetName();
+    const char *GetName();
     const char *GetBlockSetName();
 
     // Sound

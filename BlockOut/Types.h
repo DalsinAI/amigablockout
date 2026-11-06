@@ -197,21 +197,21 @@ typedef struct {
 // Util functions
 //-----------------------------------------------------------------------------
 
-extern VERTEX v(float x,float y,float z);
-extern void Normalize(VERTEX *v);
-extern int fround(float x);
-extern char *FormatTime(float seconds);
-extern char *FormatDate(uint32 time);
-extern char *FormatDateShort(uint32 time);
-extern int CreateTexture(int width,int height,char *imgName,GLuint *hmap);
-extern char GetChar(BYTE *keys);
+VERTEX v(float x,float y,float z);
+void Normalize(VERTEX *v);
+int fround(float x);
+char *FormatTime(float seconds);
+char *FormatDate(uint32 time);
+char *FormatDateShort(uint32 time);
+int CreateTexture(int width,int height,const char *imgName,GLuint *hmap);
+char GetChar(BYTE *keys);
 #ifndef WINDOWS
-extern void ZeroMemory(void *buff,int size);
+void ZeroMemory(void *buff,int size);
 #endif
-extern BOOL DirExists(char *dirname);
-extern BOOL CheckEnv();
-extern char *LID(char *fileName);
-extern char *LHD(char *fileName);
+BOOL DirExists(char *dirname);
+BOOL CheckEnv();
+const char *LID(const char *fileName);
+const char *LHD(const char *fileName);
 
 
 #endif /* TYPESH */

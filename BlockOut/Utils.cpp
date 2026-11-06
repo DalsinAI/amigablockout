@@ -106,8 +106,9 @@ char *FormatDate(uint32 time) {
 
   static char ret[32];
   if( time>0 ) {
-#ifdef LOCALTIME32
-    struct tm *ts = _localtime32((__time32_t *)&time);
+#ifdef LOCALTIME64
+    time_t d = (time_t)time;
+    struct tm *ts = localtime(&d);
 #else
     time_t innerTm = (time_t)time;
     struct tm *ts = localtime((time_t *)&innerTm);
@@ -130,8 +131,9 @@ char *FormatDateShort(uint32 time) {
 
   static char ret[32];
   if( time>0 ) {
-#ifdef LOCALTIME32
-    struct tm *ts = _localtime32((__time32_t *)&time);
+#ifdef LOCALTIME64
+    time_t d = (time_t)time;
+    struct tm *ts = localtime(&d);
 #else
     time_t innerTm = (time_t)time;
     struct tm *ts = localtime((time_t *)&innerTm);
@@ -238,7 +240,7 @@ BOOL CheckEnv() {
 // Name: LID()
 // Desc: Locate file in the installation directory
 //-----------------------------------------------------------------------------
-char *LID(char *fileName) {
+const char *LID(const char *fileName) {
 
 #ifdef WINDOWS
   return fileName;
@@ -254,7 +256,7 @@ char *LID(char *fileName) {
 // Name: LHD()
 // Desc: Locate file in the home directory
 //-----------------------------------------------------------------------------
-char *LHD(char *fileName) {
+const char *LHD(const char *fileName) {
 
   static char ret[512];
 
@@ -278,7 +280,7 @@ char *LHD(char *fileName) {
 // Name: CreateTexture()
 // Desc: Create a texture (no alpha)
 //-----------------------------------------------------------------------------
-int CreateTexture(int width,int height,char *imgName,GLuint *hmap) {
+int CreateTexture(int width,int height,const char *imgName,GLuint *hmap) {
 
   *hmap = 0;
   CImage img;

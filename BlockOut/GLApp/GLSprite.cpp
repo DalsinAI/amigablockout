@@ -8,7 +8,7 @@
 #undef LoadImage
 #include <CImage.h>
 
-extern char *LID(char *fileName);
+extern const char *LID(const char *fileName);
 
 // -------------------------------------------
 
@@ -54,7 +54,7 @@ void Sprite2D::UpdateSprite(int x1,int y1,int x2,int y2) {
 
 // -------------------------------------------
 
-int Sprite2D::RestoreDeviceObjects(char *diffName,char *alphaName,int scrWidth,int scrHeight) {
+int Sprite2D::RestoreDeviceObjects(const char *diffName,const char *alphaName,int scrWidth,int scrHeight) {
 
   GLint  bpp;
   GLenum format;

@@ -364,7 +364,7 @@ int SetupManager::GetTimeout() {
 
 // ------------------------------------------------
 
-char *SetupManager::GetName() {
+const char *SetupManager::GetName() {
 
   static char ret[32];
   strcpy(ret,"");

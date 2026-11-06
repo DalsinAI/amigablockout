@@ -65,11 +65,11 @@ int main(int argc,char *argv[])
 // Name: BlockOut()
 // Desc: Application constructor. Sets attributes for the app.
 //-----------------------------------------------------------------------------
-BlockOut::BlockOut()
+BlockOut::BlockOut() : GLApplication(STR(APP_VERSION))
 {
   inited = FALSE;
   mode = MENU_MODE;
-  m_strWindowTitle = STR(APP_VERSION);
+//   m_strWindowTitle = STR(APP_VERSION);
   ZeroMemory( m_bKey, sizeof(m_bKey) );
 }
 

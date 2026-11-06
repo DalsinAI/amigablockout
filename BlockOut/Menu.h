@@ -61,8 +61,8 @@ class Menu {
     // Menu page
     void ToPage(MenuPage *page);
     void ToPage(MenuPage *page,int iParam,void *wParam);
-    void RenderText(int x,int y,BOOL selected,char *text);
-    void RenderTitle(char *title);
+    void RenderText(int x,int y,BOOL selected,const char *text);
+    void RenderTitle(const char *title);
 
     PageMainMenu mainMenuPage;
     PageStartGame startGamePage;

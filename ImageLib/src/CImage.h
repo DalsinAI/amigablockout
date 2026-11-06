@@ -18,7 +18,7 @@ public:
 	// Load an image
 	// Supports GIF , JPG or PNG format
 	// Return 1 when image has been succesfully load , 0 otherwise.
-    int LoadImage(char *FileName);
+    int LoadImage(const char *FileName);
 
 	// Get error message if LoadImage fails.
 	char *GetErrorMessage();

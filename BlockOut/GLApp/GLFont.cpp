@@ -8,7 +8,7 @@
 #undef LoadImage
 #include <CImage.h>
 
-extern char *LID(char *fileName);
+extern const char *LID(const char *fileName);
 
 // -------------------------------------------
 
@@ -21,7 +21,7 @@ int GLFont2D::RestoreDeviceObjects(int scrWidth,int scrHeight) {
 
   // Load the image
   CImage img;
-  if( !img.LoadImage(LID((char *)"images/font.png")) ) {
+  if( !img.LoadImage(LID("images/font.png")) ) {
 #ifdef WINDOWS
     char message[256];
 	sprintf(message,"Failed to load %s\n",LID((char *)"images/font.png"));

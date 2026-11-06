@@ -27,12 +27,12 @@ CImage::CImage() {
 
 // ------ Load image -----
 
-int CImage::LoadImage(char *FileName) {
+int CImage::LoadImage(const char *FileName) {
 
   Release();
 
   // Get extensions
-  char *p = strrchr(FileName,'.');
+  const char *p = strrchr(FileName,'.');
   char ext[12];
 
   if( p==NULL ) {
