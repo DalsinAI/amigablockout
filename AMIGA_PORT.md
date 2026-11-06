@@ -14,7 +14,15 @@ game's data (data/: images, sounds, README.txt) from bl25-linux-x64.tar.gz
 second commit; three of Debian's patches (blockout2 2.5+dfsg1-2), third.
 Branch team2/blockout-amiga.
 
-Status: builds; not yet run in the lab.
+Status: plays in the lab (Instance-45, 6 November 2026, SDL2.module from
+gfopenrtg 29d32bf, GL on the 68k's softpipe): the main menu, a game from
+level 0 (pieces moved, turned and dropped, the score, the cubes played and
+the depth gauge), the hall of fame with a name entered and saved
+(user/hscore.dat), the online score page saying there is no network, and
+Escape on the main menu back to the Shell. Known: the game reads the keys
+once a frame, and with GL on the 68k the frames are slow, so in the lab
+(whose key taps are very short) some menu moves were missed; to be checked
+with a real keyboard.
 
 
 What you need
