@@ -97,7 +97,7 @@ int GLApplication::Create(int width, int height, BOOL bFullScreen, BOOL bVSync )
   m_screenHeight = height;
   m_bWindowed = !bFullScreen;
   
-#ifndef WINDOWS
+#if !defined(WINDOWS) && !defined(__amigaos__)
   if( getenv("DISPLAY")==NULL ) {
     printf("Warning, DISPLAY not defined, it may not work.\n");
   }

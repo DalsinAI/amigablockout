@@ -143,7 +143,13 @@ void SoundManager::PlayHit() {
 void SoundManager::PlayMusic() {
 
   if( creditsMusic==NULL ) {
+#ifdef __amigaos__
+    // the drawer's music is IMA ADPCM WAV (amiga/tools/ogg2wav.py): the
+    // 68k does not decode Vorbis
+    creditsMusic = Mix_LoadMUS( LID(STR("sounds/music.wav")) );
+#else
     creditsMusic = Mix_LoadMUS( LID(STR("sounds/music.ogg")) );
+#endif
     if( !creditsMusic ) {
 #ifdef WINDOWS
     char message[256];

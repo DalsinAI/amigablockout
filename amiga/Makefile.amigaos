@@ -1,0 +1,106 @@
+# BlockOut II 2.5 for AmigaOS 3.x, 68040/68060 + FPU, on OpenGPU's SDL 1.2
+# (sdl12-compat) and OpenGL.
+#
+#   make -f amiga/Makefile.amigaos -j2 dist \
+#        STOVE=/path/to/openamigagcc-16.2.0-open4 \
+#        NDK=/path/to/OpenNDK/Include_H SDLKIT=/path/to/opengpu-sdk \
+#        DEPS=/path/to/m68k-amigaos
+#
+# BlockOut/Makefile's sources, and ImageLib's (its PNG reader on the Team's
+# static libpng and zlib, not the bundled 1.2 copies; its GIF and JPEG
+# readers as they are). SDLKIT is the OpenGPU developer kit: libSDL.a
+# (sdl12-compat on SDL2.module), libSDL_gl.a and libGL.a, linked in the
+# order its sdl-config --libs --gl gives (libSDL_gl.a first). There is no
+# SDL_mixer 1.2 and no GLU in the kit: amiga/sdl_mixer_lite.c (the Team's,
+# WAV) and amiga/amiga_glu.c (gluPerspective, gluLookAt) stand in. No
+# network: amiga/http_none.cpp is built in place of BlockOut/Http.cpp (the
+# online hall of fame's server is gone).
+
+STOVE   ?= $(HOME)/CradleLab/toolchain/openamigagcc-16.2.0-open4-x86_64-linux
+NDK     ?= $(HOME)/CradleLab/gfopensdk/OpenNDK/Include_H
+SDLKIT  ?= /mnt/amigachrome/team2/deps/opengpu-sdk
+DEPS    ?= /mnt/amigachrome/team2/deps/m68k-amigaos
+CC      = $(STOVE)/bin/m68k-amigaos-gcc
+CXX     = $(STOVE)/bin/m68k-amigaos-g++
+STRIP   = $(STOVE)/bin/m68k-amigaos-strip
+CPU     ?= -m68040 -m68881
+# -fno-tree-loop-distribute-patterns: GCC 16's loop miscompile (the kit's
+# sdl2-config gives it for GCC 16 too).
+OPT     ?= -O2 -fomit-frame-pointer -fno-tree-loop-distribute-patterns
+
+BUILD   = build/amigaos
+OBJDIR  = $(BUILD)/obj
+PROG    = BlockOut
+OUT     = dist/BlockOut
+
+DEFS    = -D__amigaos__ -Dlinux -DNDEBUG -DNO_SDL_GLU
+INC     = -Iamiga/include -Iamiga/include/SDL -IBlockOut -IImageLib/src \
+          -I$(SDLKIT)/include -I$(SDLKIT)/include/SDL -I$(DEPS)/include
+CFLAGS  = -noixemul $(OPT) $(CPU) -fno-common -MMD -MP
+CXXFLAGS = $(CFLAGS) $(DEFS) $(INC) -std=gnu++98 -fpermissive -w -include GL/glu.h
+LDFLAGS = -noixemul $(CPU)
+LIBS    = -L$(SDLKIT)/lib -L$(DEPS)/lib -Wl,-u,_SDL12Amiga_gl -lSDL_gl -lSDL -lGL \
+          -lpng -lz -lpthread -lm
+
+BO_SRC  = $(addprefix BlockOut/,BlockOut.cpp PageChooseSetup.cpp \
+          PageStartGame.cpp EditControl.cpp PageControls.cpp Pit.cpp Game.cpp \
+          PageCredits.cpp PolyCube.cpp PageHallOfFame.cpp SetupManager.cpp \
+          InitPolyCube.cpp PageHallOfFameOnLine.cpp SoundManager.cpp Menu.cpp \
+          PageHttp.cpp Sprites.cpp MenuGraphics.cpp PageMainMenu.cpp Utils.cpp \
+          MenuGrid.cpp PageOptions.cpp PageChangeSetup.cpp PageScoreDetails.cpp \
+          PageGSOptions.cpp BotPlayer.cpp BotPlayerAI.cpp BotMatrix.cpp \
+          GLApp/GLApp.cpp GLApp/GLFont.cpp GLApp/GLMatrix.cpp GLApp/GLSprite.cpp)
+IMG_CXX = $(addprefix ImageLib/src/,gif/gif.cpp CImage.cpp jpg/H2v2.cpp \
+          jpg/idct.cpp jpg/jpegdecoder.cpp jpg/jpegdecodermain.cpp)
+IMG_C   = ImageLib/src/png/hpng.c
+AMIGA_CXX = amiga/http_none.cpp
+CSRC    = amiga/amiga_start.c amiga/amiga_screens.c amiga/stack.c \
+          amiga/sdl_mixer_lite.c amiga/amiga_glu.c
+
+OBJS    = $(BO_SRC:%.cpp=$(OBJDIR)/%.o) $(IMG_CXX:%.cpp=$(OBJDIR)/%.o) \
+          $(IMG_C:%.c=$(OBJDIR)/%.o) $(AMIGA_CXX:%.cpp=$(OBJDIR)/%.o) \
+          $(CSRC:%.c=$(OBJDIR)/%.o)
+ICONS   = $(wildcard amiga/icons/*.info)
+
+all: $(BUILD)/$(PROG)
+
+$(BUILD)/$(PROG): $(OBJS)
+	$(CXX) $(LDFLAGS) -o $@.debug $(OBJS) $(LIBS)
+	$(STRIP) -o $@ $@.debug
+
+$(OBJDIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+$(OBJDIR)/ImageLib/%.o: ImageLib/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(DEFS) -std=gnu99 -I$(DEPS)/include -w -c -o $@ $<
+
+$(OBJDIR)/amiga/%.o: amiga/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -std=gnu99 -Iamiga/include -Iamiga/include/SDL -I$(SDLKIT)/include \
+	  -I$(SDLKIT)/include/SDL -I$(NDK) -Wall -c -o $@ $<
+
+# The drawer: the program, the game's data (data/images, data/sounds; the
+# credits music made IMA ADPCM WAV by amiga/tools/ogg2wav.py, with the
+# host's GStreamer), ReadMe, upstream's README and the licence.
+dist: $(BUILD)/$(PROG) $(ICONS) AMIGA_PORT.md
+	rm -rf $(OUT) && mkdir -p $(OUT)/data
+	cp $(BUILD)/$(PROG) $(OUT)/
+	cp -R data/images $(OUT)/data/images
+	mkdir -p $(OUT)/data/sounds && cp data/sounds/*.wav $(OUT)/data/sounds/
+	python3 amiga/tools/ogg2wav.py adpcm data/sounds/music.ogg $(OUT)/data/sounds/music.wav
+	cp AMIGA_PORT.md $(OUT)/ReadMe
+	cp data/README.txt $(OUT)/README-BlockOut.txt
+	cp amiga/COPYING $(OUT)/COPYING.txt
+	cp amiga/icons/BlockOut.info amiga/icons/ReadMe.info $(OUT)/
+	for f in README-BlockOut.txt COPYING.txt; do cp amiga/icons/ReadMe.info $(OUT)/$$f.info; done
+	cp amiga/icons/Folder.info $(OUT)/data.info
+	cp amiga/icons/BlockOut-drawer.info dist/BlockOut.info
+
+-include $(OBJS:.o=.d)
+
+clean:
+	rm -rf $(BUILD)
+
+.PHONY: all clean dist

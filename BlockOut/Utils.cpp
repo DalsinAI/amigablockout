@@ -202,6 +202,18 @@ BOOL CheckEnv() {
 
 #else
 
+#ifdef __amigaos__
+  // AmigaOS: the data in the program's drawer, the setup and the high
+  // scores in its user/
+  strcpy( bl2Home , "PROGDIR:data" );
+  if( !DirExists("PROGDIR:user") && mkdir("PROGDIR:user",0777) < 0 ) {
+    printf("Directory PROGDIR:user cannot be created or accessed !\n");
+    return FALSE;
+  }
+  strcpy( usrHome , "PROGDIR:user" );
+  return TRUE;
+#endif
+
   char *homePath = getenv("HOME");
   if( homePath==NULL ) {
     printf("HOME environement variable if not defined !\n");
