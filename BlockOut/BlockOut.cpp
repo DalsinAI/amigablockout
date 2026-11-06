@@ -34,9 +34,15 @@ int WINAPI WinMain(HINSTANCE hInstance,
                    LPSTR lpCmdLine,
                    int nCmdShow)
 #else
+#ifdef __amigaos__
+extern "C" void amiga_start(void); // amiga/amiga_start.c: into the drawer
+#endif
 int main(int argc,char *argv[])
 #endif
 {
+#ifdef __amigaos__
+  amiga_start();
+#endif
 
   // Check environement
   if( !CheckEnv() ) {
@@ -65,11 +71,11 @@ int main(int argc,char *argv[])
 // Name: BlockOut()
 // Desc: Application constructor. Sets attributes for the app.
 //-----------------------------------------------------------------------------
-BlockOut::BlockOut()
+BlockOut::BlockOut() : GLApplication(STR(APP_VERSION))
 {
   inited = FALSE;
   mode = MENU_MODE;
-  m_strWindowTitle = STR(APP_VERSION);
+//   m_strWindowTitle = STR(APP_VERSION);
   ZeroMemory( m_bKey, sizeof(m_bKey) );
 }
 

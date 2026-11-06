@@ -106,8 +106,9 @@ char *FormatDate(uint32 time) {
 
   static char ret[32];
   if( time>0 ) {
-#ifdef LOCALTIME32
-    struct tm *ts = _localtime32((__time32_t *)&time);
+#ifdef LOCALTIME64
+    time_t d = (time_t)time;
+    struct tm *ts = localtime(&d);
 #else
     time_t innerTm = (time_t)time;
     struct tm *ts = localtime((time_t *)&innerTm);
@@ -130,8 +131,9 @@ char *FormatDateShort(uint32 time) {
 
   static char ret[32];
   if( time>0 ) {
-#ifdef LOCALTIME32
-    struct tm *ts = _localtime32((__time32_t *)&time);
+#ifdef LOCALTIME64
+    time_t d = (time_t)time;
+    struct tm *ts = localtime(&d);
 #else
     time_t innerTm = (time_t)time;
     struct tm *ts = localtime((time_t *)&innerTm);
@@ -200,6 +202,18 @@ BOOL CheckEnv() {
 
 #else
 
+#ifdef __amigaos__
+  // AmigaOS: the data in the program's drawer, the setup and the high
+  // scores in its user/
+  strcpy( bl2Home , "PROGDIR:data" );
+  if( !DirExists("PROGDIR:user") && mkdir("PROGDIR:user",0777) < 0 ) {
+    printf("Directory PROGDIR:user cannot be created or accessed !\n");
+    return FALSE;
+  }
+  strcpy( usrHome , "PROGDIR:user" );
+  return TRUE;
+#endif
+
   char *homePath = getenv("HOME");
   if( homePath==NULL ) {
     printf("HOME environement variable if not defined !\n");
@@ -238,7 +252,7 @@ BOOL CheckEnv() {
 // Name: LID()
 // Desc: Locate file in the installation directory
 //-----------------------------------------------------------------------------
-char *LID(char *fileName) {
+const char *LID(const char *fileName) {
 
 #ifdef WINDOWS
   return fileName;
@@ -254,7 +268,7 @@ char *LID(char *fileName) {
 // Name: LHD()
 // Desc: Locate file in the home directory
 //-----------------------------------------------------------------------------
-char *LHD(char *fileName) {
+const char *LHD(const char *fileName) {
 
   static char ret[512];
 
@@ -278,7 +292,7 @@ char *LHD(char *fileName) {
 // Name: CreateTexture()
 // Desc: Create a texture (no alpha)
 //-----------------------------------------------------------------------------
-int CreateTexture(int width,int height,char *imgName,GLuint *hmap) {
+int CreateTexture(int width,int height,const char *imgName,GLuint *hmap) {
 
   *hmap = 0;
   CImage img;

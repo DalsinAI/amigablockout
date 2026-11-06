@@ -27,7 +27,7 @@ class EditControl {
     void SetDisplayLength(int length);
 
     // Set edit control mode (keys can be NULL)
-    void SetMode(char *text,BOOL edit,BYTE *keys);
+    void SetMode(const char *text,BOOL edit,BYTE *keys);
 
     // Get the mode
     BOOL GetMode();

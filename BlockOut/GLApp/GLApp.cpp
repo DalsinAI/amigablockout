@@ -14,11 +14,13 @@ extern char *LID(char *fileName);
 
 // -------------------------------------------
 
-GLApplication::GLApplication() {
+GLApplication::GLApplication(const char * strWindowTitle) : 
+    m_strWindowTitle(strWindowTitle)
+{
 
   m_bWindowed = true;
   m_bVSync = false;
-  m_strWindowTitle = (char *)"GL application";
+  //m_strWindowTitle = (char *)"GL application";
   strcpy((char *)m_strFrameStats,"");
   m_screenWidth = 640;
   m_screenHeight = 480;
@@ -95,7 +97,7 @@ int GLApplication::Create(int width, int height, BOOL bFullScreen, BOOL bVSync )
   m_screenHeight = height;
   m_bWindowed = !bFullScreen;
   
-#ifndef WINDOWS
+#if !defined(WINDOWS) && !defined(__amigaos__)
   if( getenv("DISPLAY")==NULL ) {
     printf("Warning, DISPLAY not defined, it may not work.\n");
   }
@@ -286,7 +288,7 @@ void GLApplication::printGlError() {
 #ifdef WINDOWS
   MessageBox(NULL, message, "Error", MB_OK | MB_ICONERROR);
 #else
-  printf(message);
+  printf("%s", message);
 #endif
 
 }

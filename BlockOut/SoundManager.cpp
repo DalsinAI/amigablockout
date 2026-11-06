@@ -21,6 +21,7 @@
 
 #define PLAY(x) if( enabled && x ) Mix_PlayChannel (-1, x, 0);
 
+extern const char * LID(const char * fileName);
 // ------------------------------------------------
 
 SoundManager::SoundManager() {
@@ -82,7 +83,7 @@ void SoundManager::SetEnable(BOOL enable) {
 
 // ------------------------------------------------
 
-int SoundManager::InitSound(char *fileName,Mix_Chunk **snd) {
+int SoundManager::InitSound(const char *fileName,Mix_Chunk **snd) {
 
   *snd = Mix_LoadWAV ( fileName );
   if( *snd == NULL ) {
@@ -142,7 +143,13 @@ void SoundManager::PlayHit() {
 void SoundManager::PlayMusic() {
 
   if( creditsMusic==NULL ) {
+#ifdef __amigaos__
+    // the drawer's music is IMA ADPCM WAV (amiga/tools/ogg2wav.py): the
+    // 68k does not decode Vorbis
+    creditsMusic = Mix_LoadMUS( LID(STR("sounds/music.wav")) );
+#else
     creditsMusic = Mix_LoadMUS( LID(STR("sounds/music.ogg")) );
+#endif
     if( !creditsMusic ) {
 #ifdef WINDOWS
     char message[256];

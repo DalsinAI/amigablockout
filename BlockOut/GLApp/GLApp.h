@@ -60,7 +60,7 @@ protected:
 
     // Internal variables for the state of the app
     BOOL      m_bWindowed;
-    char*     m_strWindowTitle;
+    const char* m_strWindowTitle;
     int       m_screenWidth;
     int       m_screenHeight;
     BOOL      m_bVSync;
@@ -95,7 +95,7 @@ public:
     static void printGlError();
 
     // Internal constructor
-    GLApplication();
+    GLApplication(const char * strWindowTitle);
 
 private:
 

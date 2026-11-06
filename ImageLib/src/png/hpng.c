@@ -1,6 +1,14 @@
+#ifdef __amigaos__
+#include <stdlib.h>
+#include <png.h>	/* the system's libpng (1.6), not the bundled 1.2 */
+#else
 #include <malloc.h>
+#endif
 #include <math.h>
+#include <string.h>
+#ifndef __amigaos__
 #include "png/png.h"
+#endif
 #include "hpng.h"
 
 char PngErrorMessage[1024];
@@ -45,7 +53,11 @@ int LoadPngImage(PNG_IMAGE *d) {
 	// ---------------- Error handling
 
 	png_set_error_fn(png,NULL,my_png_error,NULL);
+#if (PNG_LIBPNG_VER < 10500)
   if (setjmp(png->jmpbuf)) {
+#else
+  if ( setjmp(png_jmpbuf(png)) ) {
+#endif
  	  png_destroy_read_struct(&png, &info, &endinfo);
 	  return 0;
 	}
@@ -154,7 +166,7 @@ char *WritePngImage(char *file_name,unsigned long width,unsigned long height,uns
    {
     	sprintf(PngErrorMessage,"png_create_info_struct() failed");
       fclose(fp);
-      png_destroy_write_struct(&png_ptr,  png_infopp_NULL);
+      png_destroy_write_struct(&png_ptr,  NULL);
       return PngErrorMessage;
    }
 

@@ -15,7 +15,7 @@ public:
   
   // Initialise the sprite
   // return 1 when success, 0 otherwise
-  int RestoreDeviceObjects(char *diffName,char *alphaName,int srcWidth,int scrHeight);
+  int RestoreDeviceObjects(const char *diffName,const char *alphaName,int srcWidth,int scrHeight);
 
   // Update sprite mapping and coordinates
   void UpdateSprite(int x1,int y1,int x2,int y2);

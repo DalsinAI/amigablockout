@@ -438,7 +438,7 @@ void Menu::RenderChar(int x,int y,int w,int h,BOOL selected,char c) {
 
 // ---------------------------------------------------------------------
 
-void Menu::RenderTitle(char *title) {
+void Menu::RenderTitle(const char *title) {
 
   int  lgth = (int)strlen(title);
   int  nwFont = fround((float)wFont*1.1f);
@@ -454,7 +454,7 @@ void Menu::RenderTitle(char *title) {
 
 // ---------------------------------------------------------------------
 
-void Menu::RenderText(int x,int y,BOOL selected,char *text) {
+void Menu::RenderText(int x,int y,BOOL selected,const char *text) {
 
   float startLine   = 0.515f;
   float startColumn = 0.15f;
