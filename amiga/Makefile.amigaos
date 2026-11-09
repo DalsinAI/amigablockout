@@ -95,7 +95,6 @@ dist: $(BUILD)/$(PROG) $(ICONS) AMIGA_PORT.md
 	cp amiga/COPYING $(OUT)/COPYING.txt
 	cp amiga/icons/BlockOut.info amiga/icons/ReadMe.info $(OUT)/
 	for f in README-BlockOut.txt COPYING.txt; do cp amiga/icons/ReadMe.info $(OUT)/$$f.info; done
-	cp amiga/icons/Folder.info $(OUT)/data.info
 	cp amiga/icons/BlockOut-drawer.info dist/BlockOut.info
 
 -include $(OBJS:.o=.d)
