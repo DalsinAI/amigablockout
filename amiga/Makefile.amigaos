@@ -91,6 +91,7 @@ dist: $(BUILD)/$(PROG) $(ICONS) AMIGA_PORT.md
 	mkdir -p $(OUT)/data/sounds && cp data/sounds/*.wav $(OUT)/data/sounds/
 	python3 amiga/tools/ogg2wav.py adpcm data/sounds/music.ogg $(OUT)/data/sounds/music.wav
 	cp AMIGA_PORT.md $(OUT)/ReadMe
+	cp amiga/Controls $(OUT)/Controls
 	cp data/README.txt $(OUT)/README-BlockOut.txt
 	cp amiga/COPYING $(OUT)/COPYING.txt
 	cp amiga/icons/BlockOut.info amiga/icons/ReadMe.info $(OUT)/
